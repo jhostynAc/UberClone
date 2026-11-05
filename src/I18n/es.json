@@ -1,0 +1,10 @@
+{
+  "full_name": "Nombre Completo",
+  "id_document": "Documento de Identidad",
+  "phone_number": "Número Celular",
+  "email": "Correo",
+  "gender": "Género",
+  "gender_male": "Masculino",
+  "gender_female": "Femenino",
+  "gender_other": "Otro"
+}
