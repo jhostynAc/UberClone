@@ -1,7 +1,9 @@
+import './src/I18n/i18n'; 
 import react from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { RegistrationProvider } from './src/context/RegistrationContext';
 import UberCloneStack from './src/navigation/UberCloneStack';
 import { colors } from './src/theme';
 
@@ -20,10 +22,12 @@ const temaNavegacion = {
 export default function App() {
   return(
     <SafeAreaProvider>
-       <NavigationContainer theme={temaNavegacion}>
-            <StatusBar style="dark" />
-            <UberCloneStack />
-          </NavigationContainer>
+      <RegistrationProvider>
+        <NavigationContainer theme={temaNavegacion}>
+          <StatusBar style="dark" />
+          <UberCloneStack />
+        </NavigationContainer>
+      </RegistrationProvider>
     </SafeAreaProvider>
   )
 }

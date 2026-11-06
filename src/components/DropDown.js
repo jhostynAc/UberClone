@@ -10,10 +10,14 @@ export default function DropdownField({ label, value, onChange, items, errorMess
 
   // Buscamos el objeto completo para mostrar su 'label' en lugar del 'value'
   const itemSeleccionado = items.find(item => item.value === value);
-
-  const seleccionarOpcion = (valor) => {
-    onChange(valor);
-    setModalVisible(false); // Cierra el menú automáticamente al tocar una opción
+const seleccionarOpcion = (valor) => {
+    // Protección 3: Evita que la app explote si a DropdownField le falta el onChange
+    if (typeof onChange === 'function') {
+      onChange(valor);
+    } else {
+      console.warn("Falta la prop onChange en DropdownField");
+    }
+    setModalVisible(false);
   };
 
   return (

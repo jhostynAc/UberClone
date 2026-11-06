@@ -1,49 +1,81 @@
-// AI-assisted: see docs/AI_LOG.md #38
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, Image } from 'react-native';
+// AI-assisted: see docs/AI_LOG.md #65
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Pressable, Alert, Image, Linking, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useTranslation } from 'react-i18next'; 
 
-// Importamos los tokens de tu sistema de diseño
-import { colors, spacing, radius } from '../theme'; // Ajusta la ruta si está en otra carpeta
+import { colors, spacing, radius } from '../theme';
+import { subirACloudinary } from '../services/CloudinaryServices'; // Importamos tu servicio
 
 export default function ImageUploadField({ label, value, onChange, errorMessage }) {
+  const { t } = useTranslation(); 
+  const [isUploading, setIsUploading] = useState(false);
   
-  // Esta función despliega el menú nativo desde un solo botón
   const abrirMenuOpciones = () => {
+    if (isUploading) return; // Evita abrir el menú si ya está subiendo
     Alert.alert(
-      "Subir Foto",
-      "Elige desde dónde quieres subir tu foto",
+      t('photo_menu_title'),
+      t('photo_menu_subtitle'),
       [
-        { text: "Tomar Foto", onPress: takePhoto },
-        { text: "Elegir de la Galería", onPress: pickImage },
-        { text: "Cancelar", style: "cancel" }
+        { text: t('photo_take'), onPress: takePhoto },
+        { text: t('photo_gallery'), onPress: pickImage },
+        { text: t('photo_cancel'), style: "cancel" }
       ]
     );
   };
 
+  // Función genérica para procesar, subir a Cloudinary y actualizar el estado
+  const procesarYSubirImagen = async (uriLocal) => {
+    try {
+      setIsUploading(true);
+      const urlCloudinary = await subirACloudinary(uriLocal);
+      onChange(urlCloudinary); // Guardamos la URL pública de Cloudinary en el formulario
+    } catch (error) {
+      Alert.alert("Error de subida", "No se pudo subir la imagen a la nube. Inténtalo de nuevo.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
     if (!permissionResult.granted) {
-      Alert.alert('Permiso requerido', 'Se requiere acceso a la galería.');
+      Alert.alert(
+        t('photo_permission_req'), 
+        t('photo_permission_gal'),
+        [
+          { text: t('photo_cancel') || "Cancelar", style: "cancel" },
+          { text: "Abrir Ajustes", onPress: () => Linking.openSettings() }
+        ]
+      );
       return;
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'], 
       allowsEditing: true,
-      aspect: [4, 3], // Mantenemos tu configuración original
-      quality: 0.7,   // Mantenemos tu optimización para Cloudinary
+      aspect: [4, 3],
+      quality: 0.7,
     });
 
     if (!result.canceled) {
-      onChange(result.assets[0].uri);
+      await procesarYSubirImagen(result.assets[0].uri);
     }
   };
 
   const takePhoto = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
     if (!permissionResult.granted) {
-      Alert.alert('Permiso requerido', 'Se requiere acceso a la cámara.');
+      Alert.alert(
+        t('photo_permission_req'), 
+        t('photo_permission_cam'),
+        [
+          { text: t('photo_cancel') || "Cancelar", style: "cancel" },
+          { text: "Abrir Ajustes", onPress: () => Linking.openSettings() }
+        ]
+      );
       return;
     }
 
@@ -54,25 +86,30 @@ export default function ImageUploadField({ label, value, onChange, errorMessage 
     });
 
     if (!result.canceled) {
-      onChange(result.assets[0].uri);
+      await procesarYSubirImagen(result.assets[0].uri);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.label}>{label || t('photo_label')}</Text>
       
-      {/* Botón único que reemplaza los dos botones anteriores */}
-      <Pressable style={styles.boton} onPress={abrirMenuOpciones}>
-        <Text style={styles.botonText}>
-          {value ? "Cambiar foto seleccionada" : "Seleccionar Foto"}
-        </Text>
+      <Pressable 
+        style={[styles.boton, isUploading && { opacity: 0.7 }]} 
+        onPress={abrirMenuOpciones}
+        disabled={isUploading}
+      >
+        {isUploading ? (
+          <ActivityIndicator color="#FFF" />
+        ) : (
+          <Text style={styles.botonText}>
+            {value ? t('photo_change') : t('photo_select')}
+          </Text>
+        )}
       </Pressable>
 
-      {/* Vista previa de la imagen seleccionada */}
       {value && <Image source={{ uri: value }} style={styles.image} />}
       
-      {/* Mensaje de error, manteniendo tu regla de validación original */}
       {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
     </View>
   );
@@ -80,9 +117,9 @@ export default function ImageUploadField({ label, value, onChange, errorMessage 
 
 const styles = StyleSheet.create({
   container: { marginBottom: spacing.md, alignItems: 'stretch' },
-  label: { fontSize: 16, marginBottom: spacing.sm, fontWeight: 'bold', color: colors.texto },
-  boton: { backgroundColor: colors.border, padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
+  label: { fontSize: 16, marginBottom: spacing.sm, fontWeight: 'bold', color: '#000000' },
+  boton: { backgroundColor: '#000000', padding: spacing.md, borderRadius: radius.md, alignItems: 'center' },
   botonText: { color: '#FFF', fontWeight: 'bold', fontSize: 16 },
   image: { width: 200, height: 150, borderRadius: radius.md, marginTop: spacing.md, alignSelf: 'center' },
-  errorText: { color: colors.error, fontSize: 12, marginTop: spacing.xs },
+  errorText: { color: colors.error || '#E11900', fontSize: 12, marginTop: spacing.xs },
 });
