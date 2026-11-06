@@ -7,7 +7,6 @@ export default function SelectorId() {
   const { t, i18n } = useTranslation();
 
   const manejarCambioIdioma = (codigoIdioma) => {
-    // Evitamos cambiar si el usuario selecciona la opción vacía por defecto
     if (codigoIdioma) {
       i18n.changeLanguage(codigoIdioma);
     }
@@ -16,7 +15,7 @@ export default function SelectorId() {
   return (
     <View>
       <DropdownField
-        label={t('select_language') || "Idioma / Language"}
+        label={t('select language') || "Idioma / Language"}
         value={i18n.language}
         onChange={manejarCambioIdioma}
         items={[

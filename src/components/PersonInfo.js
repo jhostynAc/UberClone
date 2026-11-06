@@ -1,9 +1,8 @@
-// AI-assisted: see docs/AI_LOG.md #36
+// AI-assisted: see docs/AI_LOG.md #45
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, Pressable, ScrollView, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next'; 
 
-// Importamos nuestro sistema de diseño centralizado
 import { colors, spacing, radius, typography } from '../theme';
 
 import ImageUploadField from './ImageUploadField';
@@ -33,26 +32,39 @@ export default function PersonInfo() {
                 <ImageUploadField />
 
                 <View style={styles.formSection}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder={t('full_name')}
-                        placeholderTextColor={colors.placeholder}
-                    />
+                    
+                    <View style={styles.inputGroup}>
+                        {/* Corregido: full_name */}
+                        <Text style={styles.label}>{t('full_name')}</Text> 
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Ej. Juan Pérez"
+                            placeholderTextColor={colors.placeholder}
+                        />
+                    </View>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder={t('id_document')}
-                        keyboardType='numeric'
-                        maxLength={10}
-                        placeholderTextColor={colors.placeholder}
-                    />
+                    <View style={styles.inputGroup}>
+                        {/* Corregido: id_document */}
+                        <Text style={styles.label}>{t('id_document')}</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Ej. 1020304050"
+                            keyboardType='numeric'
+                            maxLength={10}
+                            placeholderTextColor={colors.placeholder}
+                        />
+                    </View>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder={t('phone_number')}
-                        keyboardType='phone-pad'
-                        placeholderTextColor={colors.placeholder}
-                    />
+                    <View style={styles.inputGroup}>
+                        {/* Corregido: phone_number */}
+                        <Text style={styles.label}>{t('phone_number')}</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Ej. 3001234567"
+                            keyboardType='phone-pad'
+                            placeholderTextColor={colors.placeholder}
+                        />
+                    </View>
 
                     <Datapicker
                         label={t('birth_date')}
@@ -65,25 +77,27 @@ export default function PersonInfo() {
                         value={genero}
                         onChange={setGenero}
                         items={[
-                            { label: t('gender_male'), value: 'Masculino' },
-                            { label: t('gender_female'), value: 'Femenino' },
-                            { label: t('gender_other'), value: 'Otro' }
+                            { label: t('gender_male'), value: 'Masculino' },   // Corregido
+                            { label: t('gender_female'), value: 'Femenino' }, // Corregido
+                            { label: t('gender_other'), value: 'Otro' }       // Corregido
                         ]}
                         errorMessage={errors.genero}
                     />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder={t('email')}
-                        keyboardType='email-address'
-                        autoCapitalize="none"
-                        placeholderTextColor={colors.placeholder}
-                    />
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>{t('email')}</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="correo@ejemplo.com"
+                            keyboardType='email-address'
+                            autoCapitalize="none"
+                            placeholderTextColor={colors.placeholder}
+                        />
+                    </View>
 
                     <SelectorId />
                 </View>
 
-                {/* Botón Principal de Acción */}
                 <Pressable 
                     style={({ pressed }) => [
                         styles.submitButton,
@@ -91,6 +105,7 @@ export default function PersonInfo() {
                     ]}
                     onPress={() => console.log('Listo para enviar a Firebase')}
                 >
+                    {/* Corregido: save_button */}
                     <Text style={styles.submitButtonText}>{t('save_button') || 'Guardar y Continuar'}</Text>
                 </Pressable>
                 
@@ -102,48 +117,52 @@ export default function PersonInfo() {
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        backgroundColor: colors.fondo,
+        backgroundColor: '#FFFFFF', // Blanco puro para estilo Uber
     },
     scrollContent: {
         padding: spacing.lg,
-        flexGrow: 1, // Asegura que el contenido ocupe toda la pantalla
+        flexGrow: 1,
     },
     headerTitle: {
         ...typography.titulo,
+        color: '#000000', // Negro puro
         marginBottom: spacing.lg,
         textAlign: 'center',
     },
     formSection: {
-        marginTop: spacing.md,
+        marginTop: spacing.sm,
+    },
+    inputGroup: {
+        marginBottom: spacing.md,
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: spacing.sm,
+        fontWeight: '600',
+        color: '#000000', // Negro puro para las etiquetas
     },
     input: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#F9FAFB', // Un gris extremadamente claro casi blanco
         borderWidth: 1,
-        borderColor: '#E5E7EB', // Un gris muy suave para los bordes
+        borderColor: '#D1D5DB', // Gris medio para el borde
         borderRadius: radius.md,
         padding: spacing.md,
-        marginBottom: spacing.md,
-        color: colors.texto,
+        color: '#000000',
         fontSize: 16,
     },
     submitButton: {
-        backgroundColor: colors.primaria,
+        backgroundColor: '#000000', // Negro absoluto corporativo Uber
         padding: spacing.lg,
         borderRadius: radius.md,
         alignItems: 'center',
         marginTop: spacing.xl,
         marginBottom: spacing.xl,
-        elevation: 2, // Sombra sutil en Android
-        shadowColor: '#000', // Sombra en iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
     },
     submitButtonPressed: {
-        opacity: 0.8, // Efecto visual al tocar el botón
+        backgroundColor: '#333333', // Gris oscuro al presionar
     },
     submitButtonText: {
-        color: '#FFFFFF',
+        color: '#FFFFFF', // Letras blancas
         fontSize: 18,
         fontWeight: 'bold',
     }
