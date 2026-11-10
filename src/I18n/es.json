@@ -36,5 +36,21 @@
   "vehicle_year": "Año",
   "vehicle_color": "Color",
   "vehicle_capacity": "Capacidad de pasajeros",
-  "vehicle_photo": "Foto del vehículo (Placa visible)"
+  "vehicle_photo": "Foto del vehículo (Placa visible)",
+  
+  "docs_title": "Documentos y Pagos",
+  "license_title": "Licencia de Conducción",
+  "license_number": "Número de Licencia",
+  "license_photo": "Foto de la Licencia",
+  "license_expiry": "Fecha de Vencimiento Licencia",
+  "soat_title": "SOAT del Vehículo",
+  "soat_photo": "Foto del SOAT",
+  "soat_expiry": "Fecha de Vencimiento SOAT",
+  "tecno_title": "Revisión Técnico-Mecánica (Requerida por año)",
+  "tecno_photo": "Foto de la Técnico-Mecánica",
+  "tecno_expiry": "Fecha de Vencimiento Técnico-Mecánica",
+  "payment_title": "Información de Pagos",
+  "mercadopago_email": "Correo de la cuenta de Mercado Pago",
+  "terms_accept": "Acepto los términos y condiciones",
+  "platform_commission": "Comisión de la plataforma: 15%"
 }

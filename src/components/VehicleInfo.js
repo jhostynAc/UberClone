@@ -8,7 +8,6 @@ import ImageUploadField from './ImageUploadField';
 import DropdownField from './DropDown';
 import NavBar from './Navbar';
 import { RegistrationContext } from '../context/RegistrationContext';
-import { guardarRegistroCompleto } from '../services/dbServices'; // Asegúrate de que esta ruta sea correcta
 
 export default function VehicleInfo() {
     const { t } = useTranslation();
@@ -204,27 +203,6 @@ export default function VehicleInfo() {
                         errorMessage={errors.color} // Muestra el error debajo del selector de color
                     />
                 </View>
-
-                {/* Botón dinámico que se deshabilita si hay errores o campos vacíos */}
-                <Pressable 
-                    style={({ pressed }) => [
-                        styles.submitButton, 
-                        pressed && styles.submitButtonPressed,
-                        !isFormValid && styles.buttonDisabled,
-                        isSubmitting && { opacity: 0.7 }
-                    ]}
-                    onPress={manejarEnvioFirebase}
-                    disabled={!isFormValid || isSubmitting}
-                >
-                    {isSubmitting ? (
-                        <ActivityIndicator color="#FFFFFF" />
-                    ) : (
-                        <Text style={[styles.submitButtonText, !isFormValid && styles.textDisabled]}>
-                            Finalizar y Registrarse
-                        </Text>
-                    )}
-                </Pressable>
-                
                 <View style={{ height: 100 }} />
             </ScrollView>
 

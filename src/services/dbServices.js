@@ -1,29 +1,32 @@
-// AI-assisted: see docs/AI_LOG.md #62
+// AI-assisted: see docs/AI_LOG.md #83
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 
-const COLLECTION = "Conductores"; // Colección principal en Firestore
+const COLLECTION = "Conductores";
 
 export const guardarRegistroCompleto = async (datosGlobales) => {
     try {
-        const { personales, vehiculo } = datosGlobales;
+        const { personales, vehiculo, documentos } = datosGlobales;
 
-        // Validamos que exista un documento de identidad para usarlo como ID único
-        if (!personales.documento) {
-            throw new Error("El documento de identidad es obligatorio para registrar al conductor.");
+        if (!personales?.documento) {
+            throw new Error("El documento de identidad es obligatorio para generar el registro.");
         }
 
-        // Usamos el número de documento como ID del documento en Firestore
         const conductorRef = doc(db, COLLECTION, personales.documento);
         
-        // Consolidamos toda la información en un solo documento estructurado
         await setDoc(conductorRef, {
             personales: {
                 ...personales,
-                fechaNacimiento: personales.fechaNacimiento ? personales.fechaNacimiento.toISOString() : null
+                fechaNacimiento: personales.fechaNacimiento ? new Date(personales.fechaNacimiento).toISOString() : null
             },
             vehiculo: {
                 ...vehiculo
+            },
+            documentos: {
+                ...documentos,
+                licenciaVencimiento: documentos.licenciaVencimiento ? new Date(documentos.licenciaVencimiento).toISOString() : null,
+                soatVencimiento: documentos.soatVencimiento ? new Date(documentos.soatVencimiento).toISOString() : null,
+                tecnoVencimiento: documentos.tecnoVencimiento ? new Date(documentos.tecnoVencimiento).toISOString() : null,
             },
             estadoRegistro: 'completado',
             fechaActualizacion: new Date().toISOString()
@@ -31,7 +34,7 @@ export const guardarRegistroCompleto = async (datosGlobales) => {
         
         return { success: true };
     } catch (error) {
-        console.error("Error al guardar en Firebase:", error);
+        console.error("Error al guardar en Firebase Firestore:", error);
         return { success: false, error: error.message };
     }
 };

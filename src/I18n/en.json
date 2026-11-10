@@ -36,5 +36,21 @@
   "vehicle_year": "Year",
   "vehicle_color": "Color",
   "vehicle_capacity": "Passenger Capacity",
-  "vehicle_photo": "Vehicle Photo (Plate visible)"
+  "vehicle_photo": "Vehicle Photo (Plate visible)",
+
+  "docs_title": "Documents and Payments",
+  "license_title": "Driver's License",
+  "license_number": "License Number",
+  "license_photo": "License Photo",
+  "license_expiry": "License Expiry Date",
+  "soat_title": "Vehicle SOAT",
+  "soat_photo": "SOAT Photo",
+  "soat_expiry": "SOAT Expiry Date",
+  "tecno_title": "Technical Inspection (Required by year)",
+  "tecno_photo": "Technical Inspection Photo",
+  "tecno_expiry": "Technical Inspection Expiry Date",
+  "payment_title": "Payment Information",
+  "mercadopago_email": "Mercado Pago account email",
+  "terms_accept": "I accept the terms and conditions",
+  "platform_commission": "Platform commission: 15%"
 }

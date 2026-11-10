@@ -1,7 +1,6 @@
-// AI-assisted: see docs/AI_LOG.md #73
+// AI-assisted: see docs/AI_LOG.md #77
 import React, { useRef, useContext } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { spacing, colors } from '../theme';
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { RegistrationContext } from '../context/RegistrationContext';
@@ -9,11 +8,11 @@ import { RegistrationContext } from '../context/RegistrationContext';
 export default function NavBar() {
     const navigation = useNavigation();
     const { datosGlobales } = useContext(RegistrationContext);
-    
     const estaNavegando = useRef(false);
 
-    // Verificamos en tiempo real si todos los datos personales y la foto están completos
-    const { personales } = datosGlobales;
+    const { personales, vehiculo } = datosGlobales;
+
+    // Validación Pestaña 1 (Datos Personales)
     const estaCompletoPersonales = 
         Boolean(personales?.fotoPerfil) &&
         Boolean(personales?.nombre?.trim()) &&
@@ -23,13 +22,22 @@ export default function NavBar() {
         Boolean(personales?.genero) &&
         Boolean(personales?.correo?.trim());
 
+    // Validación Pestaña 2 (Vehículo)
+    const estaCompletoVehiculo = 
+        Boolean(vehiculo?.fotoVehiculo) &&
+        Boolean(vehiculo?.categoria) &&
+        Boolean(vehiculo?.placa?.trim()) &&
+        Boolean(vehiculo?.marca?.trim()) &&
+        Boolean(vehiculo?.modelo?.trim()) &&
+        Boolean(vehiculo?.anio?.trim()) &&
+        Boolean(vehiculo?.color) &&
+        Boolean(vehiculo?.capacidad?.trim());
+
     const irA = (pantalla) => {
         if (estaNavegando.current) return;
         
-        // Si intenta ir al vehículo y no está completo, bloqueamos el paso
-        if (pantalla === 'Datos del Vehículo' && !estaCompletoPersonales) {
-            return; 
-        }
+        if (pantalla === 'Datos del Vehículo' && !estaCompletoPersonales) return;
+        if (pantalla === 'Documentos' && (!estaCompletoPersonales || !estaCompletoVehiculo)) return;
         
         estaNavegando.current = true;
         navigation.navigate(pantalla);
@@ -45,13 +53,20 @@ export default function NavBar() {
                 <Ionicons name="person" size={24} color="white" />
             </Pressable>
             
-            {/* Si no está completo, el botón del vehículo se ve opaco y no responde */}
             <Pressable 
                 style={[styles.boton, !estaCompletoPersonales && { opacity: 0.3 }]} 
                 onPress={() => irA('Datos del Vehículo')}
                 disabled={!estaCompletoPersonales} 
             >
                 <Ionicons name="car" size={24} color="white" />
+            </Pressable>
+
+            <Pressable 
+                style={[styles.boton, (!estaCompletoPersonales || !estaCompletoVehiculo) && { opacity: 0.3 }]} 
+                onPress={() => irA('Documentos')}
+                disabled={!estaCompletoPersonales || !estaCompletoVehiculo} 
+            >
+                <Ionicons name="document-text" size={24} color="white" />
             </Pressable>
         </View>
     );

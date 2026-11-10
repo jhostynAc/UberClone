@@ -22,6 +22,12 @@
     },
     "plugins": [
       "expo-localization",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permitir que $(PRODUCT_NAME) acceda a tu ubicación para conectar servicios de conductor."
+        }
+      ],
       "@react-native-community/datetimepicker"
     ]
   }

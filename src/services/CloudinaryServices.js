@@ -12,7 +12,7 @@ export const subirACloudinary = async (imageUri) => {
         const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
         if (!uploadPreset || !cloudName) {
-            console.error("❌ ERROR: Faltan las variables de entorno de Cloudinary en el archivo .env");
+            console.error("ERROR: Faltan las variables de entorno de Cloudinary en el archivo .env");
             throw new Error("Configuración de Cloudinary incompleta.");
         }
 
@@ -40,11 +40,11 @@ export const subirACloudinary = async (imageUri) => {
             console.log("Imagen subida con éxito a Cloudinary:", result.secure_url);
             return result.secure_url;
         } else {
-            console.error("Error devuelto por Cloudinary:", result);
+            console.error("ERROR: Error devuelto por Cloudinary:", result);
             throw new Error(result.error?.message || "No se pudo obtener la URL segura de Cloudinary.");
         }
     } catch (error) {
-        console.error(" Excepción en subirACloudinary:", error);
+        console.error("ERROR: Excepción en subirACloudinary:", error);
         throw error;
     }
 };
