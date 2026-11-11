@@ -4,6 +4,7 @@ import { colors, spacing, columns } from '../theme';
 import PersonFormScreen from '../screens/PersonFormScreen'
 import VehicleFormScreen from '../screens/VehicleFormScreen'
 import DocumentsFormScreen from '../screens/DocumentsFormScreen'
+import DriverHomeScreen from '../screens/DriverHomeScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,11 @@ export default function UberCloneStack() {
              <Stack.Screen
                 name="Documentos"
                 component={DocumentsFormScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="Home"
+                component={DriverHomeScreen}
                 options={{ headerShown: false }}
             />
         </Stack.Navigator>

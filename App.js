@@ -5,6 +5,7 @@ import { NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RegistrationProvider } from './src/context/RegistrationContext';
 import UberCloneStack from './src/navigation/UberCloneStack';
+import DriverHomeScreen from './src/screens/DriverHomeScreen';
 import { colors } from './src/theme';
 
 const temaNavegacion = {
@@ -25,7 +26,7 @@ export default function App() {
       <RegistrationProvider>
         <NavigationContainer theme={temaNavegacion}>
           <StatusBar style="dark" />
-          <UberCloneStack />
+          <DriverHomeScreen />
         </NavigationContainer>
       </RegistrationProvider>
     </SafeAreaProvider>
