@@ -5,7 +5,7 @@
 
 ### Entrada #1: Inicio e Intención de Integración
 - **Fecha:** 2026-11-13
-- **Integrante:** Nombre Apellido
+- **Integrante:** Jhostyn Albira
 - **Herramienta:** Gemini
 - **Objetivo:** Definir la implementación de una pasarela digital en la app de conductores (React Native/Expo).
 - **Prompt:** "debo entonces crear primero la pasarela en mercado pago"
@@ -14,7 +14,7 @@
 
 ### Entrada #2: Configuración de Credenciales
 - **Fecha:** 2026-11-13
-- **Integrante:** Nombre Apellido
+- **Integrante:** Jhostyn Albira
 - **Herramienta:** Gemini
 - **Objetivo:** Obtener las credenciales de prueba (`TEST-`) en Mercado Pago.
 - **Prompt:** "como cargo eso" / "ESO ME PIDE UNOS PASOS LOS DEBO HACER SI O SI? O DONDE ENCUENTRO EL ACCES TOKEN" / "no me deja tener las credenciales de prueba"
@@ -23,7 +23,7 @@
 
 ### Entrada #3: Migración a Stripe
 - **Fecha:** 2026-11-13
-- **Integrante:** Nombre Apellido
+- **Integrante:** Jhostyn Albira
 - **Herramienta:** Gemini
 - **Objetivo:** Cambiar la pasarela de Mercado Pago a Stripe por restricciones de cuenta en Colombia.
 - **Prompt:** "ejor cambiemos a stripe" / "como creo la cuenta en stripe" / "donde coloco la clave secreta" / "o lo coloco en un .env"
@@ -32,7 +32,7 @@
 
 ### Entrada #4: Código de DriverHome y WebView
 - **Fecha:** 2026-11-13
-- **Integrante:** Nombre Apellido
+- **Integrante:** Jhostyn Albira
 - **Herramienta:** Gemini
 - **Objetivo:** Integrar el servicio de Stripe en la pantalla principal del conductor y adaptar el modal WebView.
 - **Prompt:** "dame todo lo del driver home" / "ahora debo cambiar el modal de pago de ahora?"
@@ -41,7 +41,7 @@
 
 ### Entrada #5: Resolución de Errores de API y Llaves
 - **Fecha:** 2026-11-13
-- **Integrante:** Nombre Apellido
+- **Integrante:** Jhostyn Albira
 - **Herramienta:** Gemini
 - **Objetivo:** Depurar errores de importación (`TypeError`), credenciales inválidas y parámetros obsoletos de Stripe.
 - **Prompt:** "ERROR [Error: Uncaught (in promise, id: 0): "TypeError: undefined is not a function"]", "ERROR Error al generar sesión de Stripe: Invalid API Key provided...", "pk_test_...", "ERROR Error al generar sesión de Stripe: The payment_method_types parameter is no longer supported...", "donde estan las tarjetas de pruebas"
