@@ -9,6 +9,10 @@
   "gender_other": "Other",
   "email": "Email",
   "save_button": "Save and Continue",
+  "password": "Password",
+  "id_document": "ID Document",
+  "login_title": "Sign In",
+
 
   "photo_label": "Profile Photo",
   "photo_change": "Change selected photo",

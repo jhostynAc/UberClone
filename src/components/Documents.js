@@ -250,7 +250,7 @@ export default function DocumentsInfo() {
                     {isSubmitting ? (
                         <ActivityIndicator color="#FFFFFF" />
                     ) : (
-                        <Text style={[styles.submitButtonText, !isFormValid && styles.textDisabled]}>
+                        <Text style={[styles.submitButtonText, !isFormValid && styles.textDisabled]} >
                             Finalizar y Registrarse
                         </Text>
                     )}

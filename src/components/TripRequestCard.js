@@ -1,15 +1,17 @@
-// AI-assisted: see docs/AI_LOG.md #91
+// AI-assisted: see docs/AI_LOG.md #151
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { spacing, radius } from '../theme';
 
-export default function TripRequestCard({ tripData, onAccept, onReject }) {
+export default function TripRequestCard({ trip, onAccept, onReject }) {
     const [timeLeft, setTimeLeft] = useState(15); // Temporizador de 15 segundos
 
     useEffect(() => {
         if (timeLeft <= 0) {
-            onReject(); // Rechazo automático al llegar a cero[cite: 3]
+            if (trip?.id && typeof onReject === 'function') {
+                onReject(trip.id, 'timeout'); // Rechazo automático con ID y motivo
+            }
             return;
         }
 
@@ -18,7 +20,45 @@ export default function TripRequestCard({ tripData, onAccept, onReject }) {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft]);
+    }, [timeLeft, trip?.id]);
+
+    if (!trip) return null;
+
+    // 💰 Lectura y cálculo financiero robusto
+    const rawFare = Number(trip.fare || trip.price || trip.tarifaEstimada || 18000);
+    const commission = Number(trip.commission || Math.round(rawFare * 0.15));
+    const netEarnings = Number(trip.netEarnings || trip.gananciaNeta || (rawFare - commission));
+
+    const formatCurrency = (val) => 
+        Number(val || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+
+    // 📍 Extracción segura de direcciones (Soporta objetos de Firestore o strings)
+    const getAddressText = (field, fallback) => {
+        if (!field) return fallback;
+        if (typeof field === 'string') return field;
+        if (typeof field === 'object') {
+            return field.address || field.name || field.formattedAddress || field.title || fallback;
+        }
+        return fallback;
+    };
+
+    const originAddress = getAddressText(trip.origin || trip.pickup, 'Calle Principal');
+    const destinationAddress = getAddressText(trip.destination || trip.dropoff, 'Centro Comercial');
+
+    // 💳 Traducción del método de pago
+    const getPaymentLabel = (method) => {
+        switch (String(method).toLowerCase()) {
+            case 'cash':
+            case 'efectivo':
+                return 'Efectivo';
+            case 'approved':
+            case 'aprobado':
+            case 'tarjeta':
+                return 'Tarjeta / Digital';
+            default:
+                return 'Efectivo / Digital';
+        }
+    };
 
     return (
         <View style={styles.card}>
@@ -36,41 +76,56 @@ export default function TripRequestCard({ tripData, onAccept, onReject }) {
             <View style={styles.detailsBox}>
                 <View style={styles.rowItem}>
                     <Ionicons name="location-outline" size={18} color="#EF4444" />
-                    <Text style={styles.textRegular}>Origen: <Text style={styles.bold}>{tripData?.origen || 'Calle Principal'}</Text></Text>
+                    <Text style={styles.textRegular}>Origen: <Text style={styles.bold}>{originAddress}</Text></Text>
                 </View>
                 <View style={styles.rowItem}>
                     <Ionicons name="flag-outline" size={18} color="#10B981" />
-                    <Text style={styles.textRegular}>Destino: <Text style={styles.bold}>{tripData?.destino || 'Centro Comercial'}</Text></Text>
+                    <Text style={styles.textRegular}>Destino: <Text style={styles.bold}>{destinationAddress}</Text></Text>
                 </View>
 
                 <View style={styles.metaRow}>
-                    <Text style={styles.metaText}>{tripData?.distancia || '3.5 km'}</Text>
+                    <Text style={styles.metaText}>{trip?.distancia || '3.5 km'}</Text>
                     <Text style={styles.metaText}>•</Text>
-                    <Text style={styles.metaText}>{tripData?.duracion || '10 mins'}</Text>
+                    <Text style={styles.metaText}>{trip?.duracion || '10 mins'}</Text>
                     <Text style={styles.metaText}>•</Text>
-                    <Text style={styles.metaText}>{tripData?.categoria || 'Moto / Confort'}</Text>
+                    <Text style={styles.metaText}>{trip?.category || trip?.categoria || 'Moto / Confort'}</Text>
                 </View>
 
                 <View style={styles.financialBox}>
                     <View>
                         <Text style={styles.subLabel}>Tarifa estimada</Text>
-                        <Text style={styles.amountText}>${tripData?.tarifaEstimada || '15.000'}</Text>
+                        <Text style={styles.amountText}>{formatCurrency(rawFare)}</Text>
                     </View>
                     <View style={styles.alignRight}>
                         <Text style={styles.subLabel}>Tu ganancia neta</Text>
-                        <Text style={styles.netAmountText}>${tripData?.gananciaNeta || '12.750'}</Text>
+                        <Text style={styles.netAmountText}>{formatCurrency(netEarnings)}</Text>
                     </View>
                 </View>
 
-                <Text style={styles.paymentMethod}>Pago: {tripData?.metodoPago || 'Mercado Pago / Efectivo'}</Text>
+                <Text style={styles.paymentMethod}>Pago: {getPaymentLabel(trip?.paymentMethod || trip?.metodoPago)}</Text>
             </View>
 
             {/* Botones de Aceptar y Rechazar */}
             <View style={styles.actionsRow}>
-                <Pressable style={styles.rejectButton} onPress={onReject}>
+                <Pressable 
+                    style={styles.rejectButton} 
+                    onPress={() => {
+                        if (trip?.id && typeof onReject === 'function') {
+                            onReject(trip.id, 'manual');
+                        }
+                    }}
+                >
                     <Text style={styles.rejectText}>Rechazar</Text>
                 </Pressable>
-                <Pressable style={styles.acceptButton} onPress={onAccept}>
+                
+                <Pressable 
+                    style={styles.acceptButton} 
+                    onPress={() => {
+                        if (trip?.id && typeof onAccept === 'function') {
+                            onAccept(trip.id);
+                        }
+                    }}
+                >
                     <Text style={styles.acceptText}>Aceptar Viaje</Text>
                 </Pressable>
             </View>
@@ -93,6 +148,7 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 10,
         overflow: 'hidden',
+        zIndex: 20,
     },
     timerBarContainer: {
         position: 'absolute',

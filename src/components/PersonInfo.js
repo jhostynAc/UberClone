@@ -17,28 +17,26 @@ export default function PersonInfo() {
     const { t } = useTranslation();
     const { datosGlobales, actualizarDatos } = useContext(RegistrationContext);
 
-    const [fotoPerfil, setFotoPerfil] = useState(datosGlobales.personales.fotoPerfil);
-    const [nombre, setNombre] = useState(datosGlobales.personales.nombre);
-    const [documento, setDocumento] = useState(datosGlobales.personales.documento);
-    const [telefono, setTelefono] = useState(datosGlobales.personales.telefono);
-    const [correo, setCorreo] = useState(datosGlobales.personales.correo);
-    const [fechaNacimiento, setFechaNacimiento] = useState(datosGlobales.personales.fechaNacimiento);
-    const [genero, setGenero] = useState(datosGlobales.personales.genero);
+    const [fotoPerfil, setFotoPerfil] = useState(datosGlobales.personales.fotoPerfil || '');
+    const [nombre, setNombre] = useState(datosGlobales.personales.nombre || '');
+    const [documento, setDocumento] = useState(datosGlobales.personales.documento || '');
+    const [telefono, setTelefono] = useState(datosGlobales.personales.telefono || '');
+    const [correo, setCorreo] = useState(datosGlobales.personales.correo || '');
+    const [password, setPassword] = useState(datosGlobales.personales.password || '');
+    const [fechaNacimiento, setFechaNacimiento] = useState(datosGlobales.personales.fechaNacimiento || '');
+    const [genero, setGenero] = useState(datosGlobales.personales.genero || '');
 
     const [errors, setErrors] = useState({});
-    
-    // Objeto para llevar el registro de qué campos específicos ha tocado el usuario
     const [touched, setTouched] = useState({});
 
-    // Función para marcar un campo como "tocado" cuando el usuario interactúa con él
     const marcarTocado = (campo) => {
         setTouched(prev => ({ ...prev, [campo]: true }));
     };
 
     useEffect(() => {
-        // Guardado automático en la Context API en tiempo real
+        // Guardado automático en la Context API en tiempo real (incluyendo la contraseña)
         actualizarDatos('personales', {
-            fotoPerfil, nombre, documento, telefono, fechaNacimiento, genero, correo
+            fotoPerfil, nombre, documento, telefono, fechaNacimiento, genero, correo, password
         });
 
         let nuevosErrores = {};
@@ -67,7 +65,14 @@ export default function PersonInfo() {
             nuevosErrores.telefono = "Debe tener exactamente 10 dígitos.";
         }
 
-        // 5. Fecha
+        // 5. Contraseña
+        if (!password) {
+            nuevosErrores.password = "La contraseña es obligatoria.";
+        } else if (password.length < 6) {
+            nuevosErrores.password = "Debe tener al menos 6 caracteres.";
+        }
+
+        // 6. Fecha
         if (!fechaNacimiento) {
             nuevosErrores.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
         } else {
@@ -82,10 +87,10 @@ export default function PersonInfo() {
             }
         }
 
-        // 6. Género
+        // 7. Género
         if (!genero) nuevosErrores.genero = "Selecciona un género de la lista.";
 
-        // 7. Correo
+        // 8. Correo
         if (!correo.trim()) {
             nuevosErrores.correo = "El correo es obligatorio.";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
@@ -93,7 +98,7 @@ export default function PersonInfo() {
         }
 
         setErrors(nuevosErrores);
-    }, [fotoPerfil, nombre, documento, telefono, fechaNacimiento, genero, correo]);
+    }, [fotoPerfil, nombre, documento, telefono, password, fechaNacimiento, genero, correo]);
 
     return (
         <KeyboardAvoidingView 
@@ -107,9 +112,8 @@ export default function PersonInfo() {
             >
                 <Text style={styles.headerTitle}>Registro de Conductor</Text>
                 
-                {/* Solo muestra el error si el usuario ya tocó la foto */}
                 <ImageUploadField 
-                    label={t('photo_label')}
+                    label={t('photo_label') || "Foto de perfil"}
                     value={fotoPerfil}
                     onChange={(val) => { setFotoPerfil(val); marcarTocado('fotoPerfil'); }}
                     errorMessage={touched.fotoPerfil && errors.fotoPerfil} 
@@ -118,7 +122,7 @@ export default function PersonInfo() {
                 <View style={styles.formSection}>
                     
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('full_name')}</Text> 
+                        <Text style={styles.label}>{t('full_name') || "Nombre Completo"}</Text> 
                         <TextInput
                             style={[styles.input, touched.nombre && errors.nombre && styles.inputError]}
                             placeholder="Ej. Juan Pérez"
@@ -130,7 +134,7 @@ export default function PersonInfo() {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('id_document')}</Text>
+                        <Text style={styles.label}>{t('id_document') || "Documento"}</Text>
                         <TextInput
                             style={[styles.input, touched.documento && errors.documento && styles.inputError]}
                             placeholder="Ej. 1020304050"
@@ -143,8 +147,22 @@ export default function PersonInfo() {
                         {touched.documento && errors.documento && <Text style={styles.errorText}>{errors.documento}</Text>}
                     </View>
 
+                    {/* CAMPO DE CONTRASEÑA TRADUCIDO */}
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('phone_number')}</Text>
+                        <Text style={styles.label}>{t('password') || "Contraseña"}</Text>
+                        <TextInput
+                            style={[styles.input, touched.password && errors.password && styles.inputError]}
+                            placeholder="Mínimo 6 caracteres"
+                            secureTextEntry={true}
+                            placeholderTextColor={colors.placeholder}
+                            value={password}
+                            onChangeText={(val) => { setPassword(val); marcarTocado('password'); }}
+                        />
+                        {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>{t('phone_number') || "Teléfono"}</Text>
                         <TextInput
                             style={[styles.input, touched.telefono && errors.telefono && styles.inputError]}
                             placeholder="Ej. 3001234567"
@@ -158,26 +176,26 @@ export default function PersonInfo() {
                     </View>
 
                     <Datapicker
-                        label={t('birth_date')}
+                        label={t('birth_date') || "Fecha de Nacimiento"}
                         value={fechaNacimiento}
                         onChange={(val) => { setFechaNacimiento(val); marcarTocado('fechaNacimiento'); }}
                         errorMessage={touched.fechaNacimiento && errors.fechaNacimiento}
                     />
 
                     <DropdownField
-                        label={t('gender')}
+                        label={t('gender') || "Género"}
                         value={genero}
                         onChange={(val) => { setGenero(val); marcarTocado('genero'); }}
                         items={[
-                            { label: t('gender_male'), value: 'Masculino' }, 
-                            { label: t('gender_female'), value: 'Femenino' }, 
-                            { label: t('gender_other'), value: 'Otro' }       
+                            { label: t('gender_male') || 'Masculino', value: 'Masculino' }, 
+                            { label: t('gender_female') || 'Femenino', value: 'Femenino' }, 
+                            { label: t('gender_other') || 'Otro', value: 'Otro' }      
                         ]}
                         errorMessage={touched.genero && errors.genero}
                     />
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('email')}</Text>
+                        <Text style={styles.label}>{t('email') || "Correo"}</Text>
                         <TextInput
                             style={[styles.input, touched.correo && errors.correo && styles.inputError]}
                             placeholder="correo@ejemplo.com"

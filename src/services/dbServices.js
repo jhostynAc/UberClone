@@ -1,10 +1,9 @@
-// AI-assisted: see docs/AI_LOG.md #83
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 
 const COLLECTION = "Conductores";
 
-export const guardarRegistroCompleto = async (datosGlobales) => {
+export const guardarRegistroCompleto = async (datosGlobales, ubicacionInicial = null) => {
     try {
         const { personales, vehiculo, documentos } = datosGlobales;
 
@@ -16,7 +15,7 @@ export const guardarRegistroCompleto = async (datosGlobales) => {
         
         await setDoc(conductorRef, {
             personales: {
-                ...personales,
+                ...personales, // Incluye nombre, documento, teléfono, correo, género y la nueva contraseña
                 fechaNacimiento: personales.fechaNacimiento ? new Date(personales.fechaNacimiento).toISOString() : null
             },
             vehiculo: {
@@ -28,6 +27,13 @@ export const guardarRegistroCompleto = async (datosGlobales) => {
                 soatVencimiento: documentos.soatVencimiento ? new Date(documentos.soatVencimiento).toISOString() : null,
                 tecnoVencimiento: documentos.tecnoVencimiento ? new Date(documentos.tecnoVencimiento).toISOString() : null,
             },
+            ubicacionActual: {
+                latitude: ubicacionInicial ? ubicacionInicial.latitude : 6.2442, 
+                longitude: ubicacionInicial ? ubicacionInicial.longitude : -75.5812,
+                timestamp: new Date().toISOString()
+            },
+            aprobado: false,         // Bloqueado hasta que la administración lo apruebe
+            isAvailable: false,      // Desconectado por defecto
             estadoRegistro: 'completado',
             fechaActualizacion: new Date().toISOString()
         });

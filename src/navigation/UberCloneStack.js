@@ -5,12 +5,24 @@ import PersonFormScreen from '../screens/PersonFormScreen'
 import VehicleFormScreen from '../screens/VehicleFormScreen'
 import DocumentsFormScreen from '../screens/DocumentsFormScreen'
 import DriverHomeScreen from '../screens/DriverHomeScreen'
+import LoginScreen from "../screens/LoginScreen";
+import WelcomeScreen from '../screens/WelcomeScreen'
 
 const Stack = createNativeStackNavigator();
 
 export default function UberCloneStack() {
     return (
         <Stack.Navigator>
+            <Stack.Screen
+                name="Welcome"
+                component={WelcomeScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name="Datos Personales"
                 component={PersonFormScreen}
@@ -31,6 +43,7 @@ export default function UberCloneStack() {
                 component={DriverHomeScreen}
                 options={{ headerShown: false }}
             />
+            
         </Stack.Navigator>
     )
 }

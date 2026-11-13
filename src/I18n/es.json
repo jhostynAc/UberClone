@@ -9,6 +9,10 @@
   "gender_other": "Otro",
   "email": "Correo Electrónico",
   "save_button": "Guardar y Continuar",
+  "password": "Contraseña",
+  "id_document": "Número de Documento",
+  "login_title": "Iniciar Sesión",
+
 
   "photo_label": "Foto de perfil",
   "photo_change": "Cambiar foto seleccionada",

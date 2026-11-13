@@ -26,7 +26,7 @@ export default function App() {
       <RegistrationProvider>
         <NavigationContainer theme={temaNavegacion}>
           <StatusBar style="dark" />
-          <DriverHomeScreen />
+          <UberCloneStack />
         </NavigationContainer>
       </RegistrationProvider>
     </SafeAreaProvider>
